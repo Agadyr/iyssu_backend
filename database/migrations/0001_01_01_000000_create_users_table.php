@@ -14,10 +14,30 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('phone', 20)->unique();
             $table->string('email')->unique();
+            $table->string('city')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->boolean('is_active')->default(false);
+            $table->enum('role', ['user', 'moderator', 'admin'])->default('user');
             $table->rememberToken();
+            $table->timestamps();
+        });
+
+        Schema::create('bonus_points', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->integer('amount')->default(0);
+            $table->timestamps();
+        });
+
+        Schema::create('bonus_histories', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->integer('amount');
+            $table->string('operation_type');
+            $table->text('description')->nullable();
             $table->timestamps();
         });
 
@@ -42,6 +62,8 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::dropIfExists('bonus_histories');
+        Schema::dropIfExists('bonus_points');
         Schema::dropIfExists('users');
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');

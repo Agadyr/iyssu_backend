@@ -2,7 +2,6 @@
 
 namespace App\Console;
 
-use App\Console\Commands\ParseExchangeRates;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
@@ -17,7 +16,6 @@ class Kernel extends ConsoleKernel
         $this->load(__DIR__.'/Commands');
 
         $this->commands([
-            ParseExchangeRates::class,
         ]);
     }
 }
