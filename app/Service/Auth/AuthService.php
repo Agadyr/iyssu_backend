@@ -5,14 +5,14 @@ namespace App\Service\Auth;
 use App\Mail\SendOtpCode;
 use App\Models\OtpCode;
 use App\Models\User;
-use Illuminate\Http\JsonResponse;
+use Exception;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Validation\ValidationException;
 
 class AuthService
 {
-    public function register(array $data): JsonResponse
+    public function register(array $data): array
     {
         $user = User::create([
             'name' => $data['name'],
@@ -22,51 +22,61 @@ class AuthService
             'email_verified_at' => null,
         ]);
 
-        $token = $user->createToken('auth_token', ['*'],now()->addDay(1))->plainTextToken;
+        $token = $user->createToken('auth_token', ['*'], now()->addDay(1))->plainTextToken;
 
-        return response()->json([
+        return [
             'user' => $user,
             'token' => $token,
-        ], 200);
+        ];
     }
 
-    public function login(array $data): JsonResponse
+    /**
+     * @throws ValidationException
+     */
+    public function login(array $data): array
     {
         $user = User::where('email', $data['email'])->first();
 
-        if (!$user || ! Hash::check($data['password'], $user->password)) {
-            return response()->json(['The provided credentials are incorrect'], 403);
+        if (!$user || !Hash::check($data['password'], $user->password)) {
+            throw ValidationException::withMessages([
+                'email' => ['The provided credentials are incorrect.'],
+            ]);
         }
 
-        $token = $user->createToken('auth_token', ['*'],now()->addHours(5))->plainTextToken;
+        $token = $user->createToken('auth_token', ['*'], now()->addHours(5))->plainTextToken;
 
-        return response()->json([
+        return [
             'user' => $user,
             'token' => $token,
-        ], 200);
+        ];
     }
 
-    public function sendOtp(array $data, string $type): JsonResponse
+    /**
+     * @throws Exception
+     */
+    public function sendOtp(array $data, string $type): void
     {
-        $user = User::where('email', $data['email'])->first();
+        $user = User::where('email', $data['email'])->firstOrFail();
 
-        [$otpCode, $expiresAt] = $this->generateOtp();
+        [$otp, $expiresAt] = $this->generateOtp();
 
         $otp = OtpCode::updateOrCreate(
             ['user_id' => $user->id, 'type' => $type],
-            ['code' => $otpCode, 'expires_at' => $expiresAt]
+            ['code' => $otp, 'expires_at' => $expiresAt]
         );
 
         Mail::to($data['email'])->queue(new SendOtpCode($user, $otp));
-        return response()->json(['message' => 'OTP отправлен на вашу почту'], 200);
-
     }
-    public function verifyOtp(array $data): JsonResponse
-    {
-        $user = User::where('email', $data['email'])->first();
 
+    /**
+     * @throws Exception
+     */
+    public function verifyOtp(array $data): User
+    {
+        /** @var User $user */
+        $user = auth()->user();
         if ($user->email_verified_at) {
-            return response()->json(['message' => 'Этот пользователь уже потвердил свою почту'], 409);
+            throw new Exception('User already verified.', 409);
         }
 
         $otp = OtpCode::where('user_id', $user->id)
@@ -76,34 +86,30 @@ class AuthService
             ->first();
 
         if (!$otp) {
-            return response()->json(['message' => 'Неверный или просроченный OTP'], 400);
+            throw new Exception('Invalid or expired OTP.', 400);
         }
 
         $user->email_verified_at = now();
         $user->save();
 
-        OtpCode::where('id', $otp->id)->delete();
+        $otp->delete();
 
-        return response()->json([
-            'user' => $user,
-            'message' => 'Почта подтверждена'
-        ], 200);
+        return $user;
     }
 
-    public function destroyTokens(): JsonResponse
+    public function destroyTokens(): void
     {
         auth()->user()->tokens()->delete();
-        return response()->json([
-            'message' => 'Logout Successful'
-        ], 200);
     }
 
-    protected function generateOtp (): array
+    /**
+     * @throws Exception
+     */
+    protected function generateOtp(): array
     {
-        $otpCode = rand(1000, 9999);
-        $expiresAt = now()->addSeconds(180);
-
-        return [$otpCode, $expiresAt];
+        return [
+            random_int(1000, 9999),
+            now()->addSeconds(180)
+        ];
     }
-
 }

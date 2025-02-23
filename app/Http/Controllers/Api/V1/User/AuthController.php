@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Api\V1\User;
+
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\OtpSetRequest;
@@ -13,57 +14,72 @@ use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
-    private AuthService $authService;
-    private PasswordService $passwordService;
-
-    public function __construct(AuthService $authService, PasswordService $passwordService)
-    {
-        $this->authService = $authService;
-        $this->passwordService = $passwordService;
-    }
+    public function __construct(
+        private AuthService $authService,
+        private PasswordService $passwordService
+    ) {}
 
     public function register(RegisterRequest $request): JsonResponse
     {
-        return $this->authService->register($request->validated());
+        $data = $this->authService->register($request->validated());
+        return response()->json($data, 201);
     }
 
     public function sendConfirmationOtp(Request $request): JsonResponse
     {
-        $validated = $request->validate(['email' => 'required|email|exists:users,email']);
+        $request->validate(['email' => 'required|email|exists:users,email']);
 
-        return $this->authService->sendOtp($validated, 'email_verification');
+        $this->authService->sendOtp($request->only('email'), 'email_verification');
+        return response()->json(['message' => 'OTP отправлен на вашу почту']);
     }
+
     public function verifyOtpEmail(OtpSetRequest $request): JsonResponse
     {
-        return $this->authService->verifyOtp($request->validated());
+        $user = $this->authService->verifyOtp($request->validated());
+        return response()->json([
+            'user' => $user,
+            'message' => 'Почта подтверждена'
+        ]);
     }
 
     public function login(LoginRequest $request): JsonResponse
     {
-        return $this->authService->login($request->validated());
-
+        $data = $this->authService->login($request->validated());
+        return response()->json($data);
     }
 
     public function sendResetOtp(Request $request): JsonResponse
     {
-        $validated = $request->validate(['email' => 'required|email|exists:users,email']);
+        $request->validate(['email' => 'required|email|exists:users,email']);
 
-        return $this->authService->sendOtp($validated, 'password_reset');
+        $this->authService->sendOtp($request->only('email'), 'password_reset');
+        return response()->json(['message' => 'OTP отправлен на вашу почту']);
     }
 
     public function verifyOtpReset(OtpSetRequest $request): JsonResponse
     {
-        return $this->passwordService->verifyOtpForReset($request->validated());
+        try {
+            $data = $this->passwordService->verifyOtpForReset($request->validated());
+            return response()->json($data);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Something went wrong'], $e->getCode());
+        }
     }
+
 
     public function resetPassword(ResetPasswordRequest $request): JsonResponse
     {
-        return $this->passwordService->resetPassword($request->validated());
+        try {
+            $this->passwordService->resetPassword($request->validated());
+            return response()->json(['message' => 'Пароль успешно изменён. Авторизуйтесь снова.']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Something went wrong'], $e->getCode());
+        }
     }
 
     public function logout(): JsonResponse
     {
-        return $this->authService->destroyTokens();
+        $this->authService->destroyTokens();
+        return response()->json(['message' => 'Logout Successful']);
     }
 }
-

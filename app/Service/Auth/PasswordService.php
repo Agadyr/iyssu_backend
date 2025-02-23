@@ -4,24 +4,30 @@ namespace App\Service\Auth;
 
 use App\Models\OtpCode;
 use App\Models\User;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
 
 class PasswordService extends AuthService
 {
     private TokenService $tokenService;
+
     public function __construct(TokenService $tokenService)
     {
         $this->tokenService = $tokenService;
     }
 
-    public function verifyOtpForReset(array $data): JsonResponse
+    /**
+     * Подтверждение OTP для сброса пароля.
+     *
+     * @param array $data
+     * @return array
+     * @throws \Exception
+     */
+    public function verifyOtpForReset(array $data): array
     {
         $user = User::where('email', $data['email'])->first();
 
         if (!$user) {
-            return response()->json(['message' => 'Пользователь не найден'], 404);
+            throw new \Exception('Пользователь не найден', 404);
         }
 
         $otp = OtpCode::where([
@@ -29,38 +35,40 @@ class PasswordService extends AuthService
             'code' => $data['code'],
             'type' => 'password_reset'
         ])
-        ->where('expires_at', '>', now())
-        ->first();
+            ->where('expires_at', '>', now())
+            ->first();
 
         if (!$otp) {
-            return response()->json(['message' => 'Неверный или просроченный OTP'], 400);
+            throw new \Exception('Неверный или просроченный OTP', 400);
         }
 
-        OtpCode::where('id', $otp->id)->delete();
+        $otp->delete();
 
         $token = $this->tokenService->createToken($user, 'password-reset', 60);
 
-        return response()->json([
+        return [
             'message' => 'OTP подтвержден. Используйте токен для смены пароля.',
             'token' => $token,
-        ]);
+        ];
     }
 
-    public function resetPassword(array $data): JsonResponse
+    /**
+     * Сброс пароля.
+     *
+     * @param array $data
+     * @return void
+     * @throws \Exception
+     */
+    public function resetPassword(array $data): void
     {
         $user = User::where('email', $data['email'])->firstOrFail();
 
         if (!$this->tokenService->verifyToken($user, $data['token'], 'password-reset')) {
-            return response()->json(['message' => 'Недействительный токен'], 400);
+            throw new \Exception('Недействительный токен', 400);
         }
 
         $user->update([
             'password' => Hash::make($data['password']),
         ]);
-
-        return response()->json([
-            'message' => 'Пароль успешно изменён. Авторизуйтесь снова.',
-        ], 200);
     }
-
 }
