@@ -15,8 +15,8 @@ use Illuminate\Http\Request;
 class AuthController extends Controller
 {
     public function __construct(
-        private AuthService $authService,
-        private PasswordService $passwordService
+        private readonly AuthService $authService,
+        private readonly PasswordService $passwordService
     ) {}
 
     public function register(RegisterRequest $request): JsonResponse
@@ -24,6 +24,19 @@ class AuthController extends Controller
         $data = $this->authService->register($request->validated());
         return response()->json($data, 201);
     }
+
+    public function login(LoginRequest $request): JsonResponse
+    {
+        $data = $this->authService->login($request->validated());
+        return response()->json($data);
+    }
+
+    public function logout(): JsonResponse
+    {
+        $this->authService->destroyTokens();
+        return response()->json(['message' => 'Logout Successful']);
+    }
+
 
     public function sendConfirmationOtp(Request $request): JsonResponse
     {
@@ -40,12 +53,6 @@ class AuthController extends Controller
             'user' => $user,
             'message' => 'Почта подтверждена'
         ]);
-    }
-
-    public function login(LoginRequest $request): JsonResponse
-    {
-        $data = $this->authService->login($request->validated());
-        return response()->json($data);
     }
 
     public function sendResetOtp(Request $request): JsonResponse
@@ -75,11 +82,5 @@ class AuthController extends Controller
         } catch (\Exception $e) {
             return response()->json(['message' => 'Something went wrong'], $e->getCode());
         }
-    }
-
-    public function logout(): JsonResponse
-    {
-        $this->authService->destroyTokens();
-        return response()->json(['message' => 'Logout Successful']);
     }
 }

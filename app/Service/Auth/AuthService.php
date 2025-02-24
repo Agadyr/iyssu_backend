@@ -5,10 +5,10 @@ namespace App\Service\Auth;
 use App\Mail\SendOtpCode;
 use App\Models\OtpCode;
 use App\Models\User;
-use Exception;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class AuthService
 {
@@ -51,9 +51,6 @@ class AuthService
         ];
     }
 
-    /**
-     * @throws Exception
-     */
     public function sendOtp(array $data, string $type): void
     {
         $user = User::where('email', $data['email'])->firstOrFail();
@@ -69,14 +66,15 @@ class AuthService
     }
 
     /**
-     * @throws Exception
+     * @throws HttpException
      */
-    public function verifyOtp(array $data): User
+    public function verifyOtp(array $data)
     {
         /** @var User $user */
         $user = auth()->user();
+
         if ($user->email_verified_at) {
-            throw new Exception('User already verified.', 409);
+            throw new HttpException(409, 'User already verified.');
         }
 
         $otp = OtpCode::where('user_id', $user->id)
@@ -86,7 +84,7 @@ class AuthService
             ->first();
 
         if (!$otp) {
-            throw new Exception('Invalid or expired OTP.', 400);
+            throw new HttpException(400, 'Invalid or expired OTP.');
         }
 
         $user->email_verified_at = now();
@@ -103,6 +101,7 @@ class AuthService
     }
 
     /**
+     * @throws \HttpException
      * @throws Exception
      */
     protected function generateOtp(): array

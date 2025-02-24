@@ -23,11 +23,12 @@ Route::prefix('auth')->group(function () {
 
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/register', [AuthController::class, 'register']);
+
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('/logout', [AuthController::class, 'logout']);
         Route::post('/send-confirmation-otp', [AuthController::class, 'sendConfirmationOtp']);
+        Route::post('/verify-email', [AuthController::class, 'verifyOtpEmail']);
     });
-    Route::post('/verify-email', [AuthController::class, 'verifyOtpEmail']);
 });
 
 

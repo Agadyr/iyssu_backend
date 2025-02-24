@@ -6,41 +6,43 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Profile\CountingBonusRequest;
 use App\Models\User;
 use App\Service\Bonus\BonusService;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 
 class BonusController extends Controller
 {
     private BonusService $bonusService;
+    private User $user;
 
     public function __construct(BonusService $bonusService)
     {
         $this->bonusService = $bonusService;
+        $user = Auth::user();
+        if (!$user instanceof User) {
+            throw new \TypeError('User is not authenticated or is not of type User.');
+        }
+
+        $this->user = $user;
     }
 
     public function getBonusPoints(): JsonResponse
     {
-        /** @var User $user */
-
-        $user = Auth::user();
-        $bonusPoints = $this->bonusService->getBonusPoints($user);
+        $bonusPoints = $this->bonusService->getBonusPoints($this->user);
         return response()->json(['bonus_points' => $bonusPoints]);
     }
 
     // Получить историю бонусов
     public function getBonusHistory(): JsonResponse
     {
-        /** @var User $user */
-
-        $user = Auth::user();
-        $history = $this->bonusService->getBonusHistory($user);
+        $history = $this->bonusService->getBonusHistory($this->user);
         return response()->json(['history' => $history]);
     }
 
     // Начислить бонусы
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function addBonusPoints(CountingBonusRequest $request, User $user): JsonResponse
     {
@@ -52,7 +54,7 @@ class BonusController extends Controller
     // Списать бонусы
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function deductBonusPoints(CountingBonusRequest $request, User $user): JsonResponse
     {
