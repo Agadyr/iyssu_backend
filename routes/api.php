@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\V1\User\AuthController;
 use App\Http\Controllers\Api\V1\User\UserProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\User\BonusController;
+use App\Http\Controllers\Api\V1\Category\CategoryController;
 
 Route::prefix('promo')->group(function () {
     Route::get('/check', [PromocodeController::class, 'index']);
@@ -47,3 +48,13 @@ Route::prefix('bonuses')->middleware('auth:sanctum')->group(function () {
     });
 });
 
+Route::prefix('/category')->group(function () {
+    Route::get('', [CategoryController::class, 'index']);
+    Route::get('/{category}', [CategoryController::class, 'show']);
+
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('/', [CategoryController::class, 'store']);
+        Route::put('/{category}', [CategoryController::class, 'update']);
+        Route::delete('/{category}', [CategoryController::class, 'destroy']);
+    });
+});
