@@ -23,7 +23,6 @@ return new class extends Migration
 
             $table->json('volume_options')->nullable();
             $table->json('scent')->nullable();
-            $table->json('scent_type')->nullable();
             $table->json('image_url')->nullable();
             $table->decimal('rating', 5, 2)->default(0);
             $table->unsignedInteger('discount')->default(0);

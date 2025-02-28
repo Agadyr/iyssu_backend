@@ -24,7 +24,6 @@ class ProductSeeder extends Seeder
                 'category_id' => 1,
                 'volume_options' => [3, 6],
                 'scent' => ['имбирь', 'грейпфрут', 'амбра'],
-                'scent_type' => ['цитрусовый', 'древесный'],
                 'image_url' => ['lv_immensite_1.jpg', 'lv_immensite_2.jpg'],
                 'rating' => 4.8,
                 'discount' => 10
@@ -39,7 +38,6 @@ class ProductSeeder extends Seeder
                 'category_id' => 1,
                 'volume_options' => [3, 6],
                 'scent' => ['грейпфрут', 'древесина', 'амбровые ноты'],
-                'scent_type' => ['цитрусовый', 'древесный'],
                 'image_url' => ['bvlgari_tygar_1.jpg', 'bvlgari_tygar_2.jpg'],
                 'rating' => 4.7,
                 'discount' => 15
@@ -54,7 +52,6 @@ class ProductSeeder extends Seeder
                 'category_id' => 1,
                 'volume_options' => [3, 6, 9],
                 'scent' => ['цитрус', 'цветы', 'древесина'],
-                'scent_type' => ['цитрусовый', 'цветочный', 'древесный'],
                 'image_url' => ['terenzi_gumin_1.jpg', 'terenzi_gumin_2.jpg'],
                 'rating' => 4.9,
                 'discount' => 20

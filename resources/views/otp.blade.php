@@ -30,10 +30,10 @@
             text-align: center;
             font-size: 32px;
             font-weight: bold;
-            color: #007bff;
+            color: #006965;
             margin: 20px 0;
             padding: 10px;
-            border: 2px dashed #007bff;
+            border: 2px dashed #006965;
             display: inline-block;
             border-radius: 5px;
         }
@@ -42,11 +42,19 @@
             color: #555;
             line-height: 1.5;
         }
+        .email {
+            color: #006965 !important;
+            font-weight: bold;
+        }
         .footer {
             margin-top: 20px;
             font-size: 14px;
             color: #888;
             text-align: center;
+        }
+        a {
+            color: #006965 !important;
+            text-decoration: none;
         }
     </style>
 </head>
@@ -58,14 +66,14 @@
     <p class="info">Здравствуйте, <strong>{{ $user->name }}</strong>!</p>
 
     @if ($otp->type !== 'password_reset')
-        <p class="info">Ваш OTP-код для подтверждения email <strong>{{ $user->email }}</strong>:</p>
+        <p class="info">Ваш код для подтверждения email <strong class="email">{{ $user->email }}</strong>:</p>
     @else
-        <p class="info">Ваш OTP-код для сброса пароля для email <strong>{{ $user->email }}</strong>:</p>
+        <p class="info">Ваш код для сброса пароля для email <strong class="email">{{ $user->email }}</strong>:</p>
     @endif
 
     <div class="otp-code">{{ $otp->code }}</div>
 
-    <p class="info">Код истекает через <strong>{{ \Carbon\Carbon::parse($otp->expires_at)->diffForHumans() }}</strong>.</p>
+    <p class="info">Код истекает через <strong>{{ \Carbon\Carbon::parse($otp->expires_at)->locale('ru')->diffForHumans() }}</strong>.</p>
 
     <p class="info">Если вы не запрашивали этот код, просто проигнорируйте это письмо.</p>
 

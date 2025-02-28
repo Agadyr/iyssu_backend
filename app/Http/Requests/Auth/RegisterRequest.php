@@ -21,7 +21,7 @@ class RegisterRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'phone' => ['required', 'regex:/^\+7\d{10}$/'],
+            'phone' => ['required', 'regex:/^\+7\d{10}$/', 'unique:users,phone'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ];
@@ -36,6 +36,8 @@ class RegisterRequest extends FormRequest
             'name.required' => 'Имя обязательно.',
             'name.string' => 'Имя должно быть строкой.',
             'name.max' => 'Имя не может быть длиннее 255 символов.',
+
+            'phone.unique' => 'Этот номер уже зарегистрирован',
 
             'email.required' => 'Email обязателен.',
             'email.email' => 'Введите корректный email.',

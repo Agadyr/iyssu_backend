@@ -2,9 +2,9 @@
 
 namespace App\Service\Category;
 
+use App\Exceptions\ApiException;
 use App\Models\Category;
 use Illuminate\Database\Eloquent\Collection;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Database\QueryException;
 
 class CategoryService
@@ -20,14 +20,14 @@ class CategoryService
     /**
      * @param array $data
      * @return Category
-     * @throws HttpException
+     * @throws ApiException
      */
     public function store(array $data): Category
     {
         try {
             return Category::create($data);
         } catch (QueryException $e) {
-            throw new HttpException(400, 'Ошибка при создании категории');
+            throw new ApiException(400, 'Ошибка при создании категории');
         }
     }
 
@@ -35,7 +35,7 @@ class CategoryService
      * @param Category $category
      * @param array $data
      * @return Category
-     * @throws HttpException
+     * @throws ApiException
      */
 
     public function update(Category $category, array $data): Category
@@ -44,19 +44,19 @@ class CategoryService
             $category->update($data);
             return $category;
         } catch (\Exception $e) {
-            throw new HttpException(400, 'Ошибка при обновлении категории');
+            throw new ApiException(400, 'Ошибка при обновлении категории');
         }
     }
 
     /**
      * @param Category $category
      * @return void
-     * @throws HttpException
+     * @throws ApiException
      */
     public function destroy(Category $category): void
     {
         if (!$category->delete()) {
-            throw new HttpException(400, 'Ошибка при удалении категории');
+            throw new ApiException(400, 'Ошибка при удалении категории');
         }
     }
 }

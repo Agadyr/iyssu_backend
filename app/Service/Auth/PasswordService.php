@@ -2,9 +2,9 @@
 
 namespace App\Service\Auth;
 
+use App\Exceptions\ApiException;
 use App\Models\OtpCode;
 use App\Models\User;
-use HttpException;
 use Illuminate\Support\Facades\Hash;
 
 class PasswordService extends AuthService
@@ -21,14 +21,14 @@ class PasswordService extends AuthService
      *
      * @param array $data
      * @return array
-     * @throws HttpException
+     * @throws ApiException
      */
     public function verifyOtpForReset(array $data): array
     {
         $user = User::where('email', $data['email'])->first();
 
         if (!$user) {
-            throw new HttpException(404, 'Пользователь не найден');
+            throw new ApiException(404, 'Пользователь не найден');
         }
 
         $otp = OtpCode::where([
@@ -40,7 +40,7 @@ class PasswordService extends AuthService
             ->first();
 
         if (!$otp) {
-            throw new HttpException( 400, 'Неверный или просроченный OTP');
+            throw new ApiException( 400, 'Неверный или просроченный OTP');
         }
 
         $otp->delete();
@@ -58,14 +58,14 @@ class PasswordService extends AuthService
      *
      * @param array $data
      * @return void
-     * @throws HttpException
+     * @throws ApiException
      */
     public function resetPassword(array $data): void
     {
         $user = User::where('email', $data['email'])->firstOrFail();
 
         if (!$this->tokenService->verifyToken($user, $data['token'], 'password-reset')) {
-            throw new HttpException(400, 'Недействительный токен');
+            throw new ApiException(400, 'Недействительный токен');
         }
 
         $user->update([

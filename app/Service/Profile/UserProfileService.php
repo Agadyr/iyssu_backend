@@ -2,9 +2,9 @@
 
 namespace App\Service\Profile;
 
+use App\Exceptions\ApiException;
 use App\Models\User;
 use Exception;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class UserProfileService
 {
@@ -32,7 +32,7 @@ class UserProfileService
         try {
             $user->update($data);
         } catch (Exception) {
-            throw new HttpException('Something went wrong');
+            throw new ApiException('Ошибка при обновлении профиля');
         }
         return $user;
     }

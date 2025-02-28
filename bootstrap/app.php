@@ -21,5 +21,10 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
+        $exceptions->renderable(function (\App\Exceptions\ApiException $e) {
+            return response()->json([
+                'message' => $e->getUserMessage()
+            ], $e->getCode());
+        });
+
     })->create();

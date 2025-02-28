@@ -6,6 +6,8 @@ use App\Http\Controllers\Api\V1\User\UserProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\User\BonusController;
 use App\Http\Controllers\Api\V1\Category\CategoryController;
+use App\Http\Controllers\Api\V1\Product\ProductController;
+use App\Http\Controllers\Api\V1\Review\ReviewController;
 
 Route::prefix('promo')->group(function () {
     Route::get('/check', [PromocodeController::class, 'index']);
@@ -57,4 +59,24 @@ Route::prefix('/category')->group(function () {
         Route::put('/{category}', [CategoryController::class, 'update']);
         Route::delete('/{category}', [CategoryController::class, 'destroy']);
     });
+});
+
+
+Route::prefix('products')->group(function () {
+    Route::get('/', [ProductController::class, 'index']);
+    Route::post('/', [ProductController::class, 'store']);
+
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::get('/{product}', [ProductController::class, 'show']);
+        Route::put('/{product}', [ProductController::class, 'update']);
+        Route::delete('/{product}', [ProductController::class, 'destroy']);
+    });
+});
+
+Route::prefix('review')->group(function () {
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('/', [ReviewController::class, 'store']);
+        Route::delete('/{review}', [ReviewController::class, 'destroy'])->middleware('admin');
+    });
+    Route::get('/product/{product}', [ReviewController::class, 'index']);
 });

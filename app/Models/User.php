@@ -77,4 +77,10 @@ use Illuminate\Notifications\Notifiable;
     /**
      * @throws Exception
      */
-}
+
+    public function reviews(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    }

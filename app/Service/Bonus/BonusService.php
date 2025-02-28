@@ -2,6 +2,7 @@
 
 namespace App\Service\Bonus;
 
+use App\Exceptions\ApiException;
 use App\Models\BonusHistory;
 use App\Models\User;
 use Exception;
@@ -35,7 +36,7 @@ class BonusService
     }
 
     /**
-     * @throws Exception
+     * @throws ApiException
      */
     protected function updateBonusPoints(User $user, int $amount, string $operationType, string $description = null): void
     {
@@ -52,7 +53,7 @@ class BonusService
             ]);
 
         } catch (Exception) {
-            throw new Exception("Failed to update bonus points: ");
+            throw new ApiException("Failed to update bonus points: ");
         }
     }
 }
