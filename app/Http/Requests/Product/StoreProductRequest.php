@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Product;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreProductRequest extends FormRequest
@@ -17,7 +18,7 @@ class StoreProductRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array|string>
      */
 
     public function rules(): array
@@ -30,6 +31,7 @@ class StoreProductRequest extends FormRequest
             'quantity' => 'required|integer|min:1',
             'unit' => 'required|in:ml,pcs',
             'is_new' => 'boolean',
+            'gender' => 'required|in:man,women,uni',
             'category_id' => 'required|exists:categories,id',
             'image_url' => 'array',
             'image_url.*' => 'string|url',
@@ -64,6 +66,9 @@ class StoreProductRequest extends FormRequest
             'quantity_ml.min' => 'Поле Объем (мл) должно быть больше 0.',
 
             'is_new.boolean' => 'Поле Новинка должно быть true или false.',
+
+            'gender.required' => 'Поле Пол обязательно для заполнения.',
+            'gender.in' => 'Поле Пол должно быть одним из: "man", "women", "uni".',
 
             'category_id.required' => 'Поле Категория обязательно для заполнения.',
             'category_id.exists' => 'Выбранная категория не существует.',
