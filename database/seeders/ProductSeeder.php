@@ -19,7 +19,8 @@ class ProductSeeder extends Seeder
                 'description' => 'Свежий и элегантный аромат с нотами имбиря, грейпфрута и амбры.',
                 'price' => 250.00,
                 'brand' => 'Louis Vuitton',
-                'quantity_ml' => 500,
+                'quantity' => 500, // Количество
+                'unit' => 'ml', // Единица измерения
                 'is_new' => true,
                 'category_id' => 1,
                 'volume_options' => [3, 6],
@@ -33,7 +34,8 @@ class ProductSeeder extends Seeder
                 'description' => 'Яркий и энергичный аромат с аккордами грейпфрута, древесины и амбры.',
                 'price' => 220.00,
                 'brand' => 'Bvlgari',
-                'quantity_ml' => 400,
+                'quantity' => 400,
+                'unit' => 'ml',
                 'is_new' => false,
                 'category_id' => 1,
                 'volume_options' => [3, 6],
@@ -47,7 +49,8 @@ class ProductSeeder extends Seeder
                 'description' => 'Теплый и чувственный аромат с фруктовыми и цветочными нотами.',
                 'price' => 270.00,
                 'brand' => 'Tiziana Terenzi',
-                'quantity_ml' => 600,
+                'quantity' => 600,
+                'unit' => 'ml',
                 'is_new' => true,
                 'category_id' => 1,
                 'volume_options' => [3, 6, 9],
@@ -57,6 +60,7 @@ class ProductSeeder extends Seeder
                 'discount' => 20
             ],
         ];
+
 
         foreach ($products as $product) {
             Product::create($product);

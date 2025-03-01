@@ -19,6 +19,7 @@ class StoreProductRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
+
     public function rules(): array
     {
         return [
@@ -26,7 +27,8 @@ class StoreProductRequest extends FormRequest
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
             'brand' => 'required|string|max:255',
-            'quantity_ml' => 'required|integer|min:1',
+            'quantity' => 'required|integer|min:1',
+            'unit' => 'required|in:ml,pcs',
             'is_new' => 'boolean',
             'category_id' => 'required|exists:categories,id',
             'image_url' => 'array',
@@ -39,7 +41,6 @@ class StoreProductRequest extends FormRequest
             'discount' => 'integer|min:0',
         ];
     }
-
     public function messages(): array
     {
         return [
@@ -84,6 +85,13 @@ class StoreProductRequest extends FormRequest
 
             'discount.integer' => 'Поле Скидка должно быть целым числом.',
             'discount.min' => 'Поле Скидка не может быть отрицательной.',
+
+            'quantity.required' => 'Поле Количество обязательно для заполнения.',
+            'quantity.integer' => 'Поле Количество должно быть целым числом.',
+            'quantity.min' => 'Поле Количество должно быть больше 0.',
+
+            'unit.required' => 'Поле Единица измерения обязательно.',
+            'unit.in' => 'Поле Единица измерения должно быть либо "ml", либо "pcs".',
         ];
     }
 }

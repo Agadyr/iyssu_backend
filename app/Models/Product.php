@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Product extends Model
 {
     protected $fillable = [
-        'name', 'description', 'price', 'brand', 'quantity_ml', 'is_new', 'category_id',
+        'name', 'description', 'price', 'brand', 'quantity', 'unit', 'is_new', 'category_id',
         'volume_options', 'scent', 'image_url', 'rating', 'discount'
     ];
 
@@ -17,6 +17,7 @@ class Product extends Model
         'image_url' => 'array',
         'is_new' => 'boolean',
     ];
+
 
     public function category(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {

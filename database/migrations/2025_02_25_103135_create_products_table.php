@@ -17,7 +17,8 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->decimal('price', 10, 2);
             $table->string('brand');
-            $table->unsignedInteger('quantity_ml');
+            $table->unsignedInteger('quantity');
+            $table->enum('unit', ['ml', 'pcs'])->default('ml');
             $table->boolean('is_new')->default(false);
             $table->foreignId('category_id')->constrained()->cascadeOnDelete();
 
@@ -29,6 +30,7 @@ return new class extends Migration
 
             $table->timestamps();
         });
+
     }
 
     /**
