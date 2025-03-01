@@ -18,6 +18,9 @@ class Product extends Model
         'is_new' => 'boolean',
     ];
 
+    public $hidden = [
+        'search_vector', 'updated_at'
+    ];
 
     public function category(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
