@@ -22,6 +22,7 @@ class ProductSeeder extends Seeder
                 'quantity' => 500, // Количество
                 'unit' => 'ml', // Единица измерения
                 'is_new' => true,
+                'gender' => 'uni',
                 'category_id' => 1,
                 'volume_options' => [3, 6],
                 'scent' => ['имбирь', 'грейпфрут', 'амбра'],

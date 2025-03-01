@@ -19,6 +19,7 @@ return new class extends Migration {
             $table->unsignedInteger('quantity');
             $table->enum('unit', ['ml', 'pcs'])->default('ml');
             $table->boolean('is_new')->default(false)->index();
+            $table->enum('gender', ['man', 'women', 'uni'])->default('man');
             $table->foreignId('category_id')->constrained()->cascadeOnDelete();
 
             $table->jsonb('volume_options')->nullable();

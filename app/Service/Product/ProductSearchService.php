@@ -103,6 +103,10 @@ class ProductSearchService
         if ($searchDTO->isNew) {
             $query->where('is_new', true);
         }
+
+        if ($searchDTO->gender) {
+            $query->where('gender', $searchDTO->gender);
+        }
     }
 
     /**

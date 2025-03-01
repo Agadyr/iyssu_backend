@@ -17,12 +17,13 @@ class SearchRequest extends FormRequest
             'query' => 'nullable|string|min:2',
             'scent' => 'nullable|string|min:2',
             'price_min' => 'nullable|numeric|min:0',
-            'price_max' => 'nullable|numeric|min:0|gte:price_min',
+            'price_max' => 'nullable|numeric|min:0',
             'brand' => 'nullable|string',
             'category_id' => 'nullable|integer|exists:categories,id',
             'rating' => 'nullable|numeric|min:1|max:5',
             'discount' => 'nullable|boolean',
             'is_new' => 'nullable|boolean',
+            'gender' => 'nullable|in:man,women,uni',
             'sort' => 'nullable|in:price_asc,price_desc,rating_desc',
         ];
     }
@@ -41,7 +42,6 @@ class SearchRequest extends FormRequest
 
             'price_max.numeric' => 'Максимальная цена должна быть числом.',
             'price_max.min' => 'Максимальная цена не может быть отрицательной.',
-            'price_max.gte' => 'Максимальная цена должна быть больше или равна минимальной.',
 
             'brand.string' => 'Бренд должен быть строкой.',
 
@@ -54,6 +54,7 @@ class SearchRequest extends FormRequest
 
             'discount.boolean' => 'Поле "скидка" должно быть true или false.',
             'is_new.boolean' => 'Поле "новинка" должно быть true или false.',
+            'gender.in' => 'Поле "Пол" должно быть одним из: man, women, uni.',
 
             'sort.in' => 'Поле сортировки должно быть одним из: price_asc, price_desc, rating_desc.',
         ];
