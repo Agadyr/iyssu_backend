@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\V1\User\BonusController;
 use App\Http\Controllers\Api\V1\Category\CategoryController;
 use App\Http\Controllers\Api\V1\Product\ProductController;
 use App\Http\Controllers\Api\V1\Review\ReviewController;
+use App\Http\Controllers\Api\V1\Product\ProductSearchController;
 
 Route::prefix('promo')->group(function () {
     Route::get('/check', [PromocodeController::class, 'index']);
@@ -65,6 +66,7 @@ Route::prefix('/category')->group(function () {
 Route::prefix('products')->group(function () {
     Route::get('/', [ProductController::class, 'index']);
     Route::post('/', [ProductController::class, 'store']);
+    Route::get('/search', [ProductSearchController::class, 'search']);
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('/{product}', [ProductController::class, 'show']);
