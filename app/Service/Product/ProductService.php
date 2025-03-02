@@ -3,6 +3,7 @@
 namespace App\Service\Product;
 
 use App\Exceptions\ApiException;
+use App\Models\Favorite;
 use App\Models\Product;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\QueryException;
@@ -17,7 +18,11 @@ class ProductService
      */
     public function getAll(): Collection
     {
-        return Product::with( 'category')->get();
+        $cacheKey = "products";
+
+        return cache()->remember($cacheKey, now()->addMinutes(10), function() {
+            return Product::with(['category'])->get();
+        });
     }
 
     /**

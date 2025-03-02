@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\V1\Category\CategoryController;
 use App\Http\Controllers\Api\V1\Product\ProductController;
 use App\Http\Controllers\Api\V1\Review\ReviewController;
 use App\Http\Controllers\Api\V1\Product\ProductSearchController;
+use App\Http\Controllers\Api\V1\Favorite\FavoriteController;
 
 Route::prefix('promo')->group(function () {
     Route::get('/check', [PromocodeController::class, 'index']);
@@ -34,7 +35,6 @@ Route::prefix('auth')->group(function () {
         Route::post('/verify-email', [AuthController::class, 'verifyOtpEmail']);
     });
 });
-
 
 Route::prefix('profile')->middleware(['auth:sanctum'])->group(function () {
     Route::get('/me', [UserProfileController::class, 'me']);
@@ -62,7 +62,6 @@ Route::prefix('/category')->group(function () {
     });
 });
 
-
 Route::prefix('products')->group(function () {
     Route::get('/', [ProductController::class, 'index']);
     Route::post('/', [ProductController::class, 'store']);
@@ -82,3 +81,11 @@ Route::prefix('review')->group(function () {
     });
     Route::get('/product/{product}', [ReviewController::class, 'index']);
 });
+
+
+Route::prefix('/favorite')->middleware('auth:sanctum')->group(function () {
+    Route::post('/', [FavoriteController::class, 'add']);
+    Route::delete('/', [FavoriteController::class, 'remove']);
+    Route::get('/', [FavoriteController::class, 'index']);
+});
+
