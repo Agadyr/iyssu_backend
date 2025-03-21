@@ -60,6 +60,21 @@ class ProductSeeder extends Seeder
                 'rating' => 4.9,
                 'discount' => 20
             ],
+            [
+                'name' => 'Dani box',
+                'description' => 'Теплый и чувственный аромат с фруктовыми и цветочными нотами.',
+                'price' => 5000,
+                'brand' => 'Tiziana Terenzi',
+                'quantity' => 600,
+                'unit' => 'pcs',
+                'is_new' => true,
+                'category_id' => 1,
+                'volume_options' => [3, 6, 9],
+                'scent' => ['цитрус', 'цветы', 'древесина'],
+                'image_url' => ['terenzi_gumin_1.jpg', 'terenzi_gumin_2.jpg'],
+                'rating' => 4.9,
+                'discount' => 20
+            ],
         ];
 
 

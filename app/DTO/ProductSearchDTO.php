@@ -12,7 +12,7 @@ class ProductSearchDTO
         public ?string $brand = null,
         public ?string $gender = null,
         public ?int $categoryId = null,
-        public ?int $rating = null,
+        public ?float $rating = null,
         public ?float $discount = null,
         public ?bool $isNew = null,
         public ?string $sort = null,

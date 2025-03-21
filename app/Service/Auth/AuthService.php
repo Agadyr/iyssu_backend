@@ -23,11 +23,10 @@ class AuthService
             'email_verified_at' => null,
         ]);
 
-        $token = $user->createToken('auth_token', ['*'], now()->addDay(1))->plainTextToken;
+        auth()->login($user);
 
         return [
             'user' => $user,
-            'token' => $token,
         ];
     }
 
@@ -36,21 +35,17 @@ class AuthService
      */
     public function login(array $data): array
     {
-        $user = User::where('email', $data['email'])->first();
-
-        if (!$user || !Hash::check($data['password'], $user->password)) {
+        if (!auth()->attempt(['email' => $data['email'], 'password' => $data['password']])) {
             throw ValidationException::withMessages([
-                'email' => ['The provided credentials are incorrect.'],
+                'email' => ['Введенные данные не валидны'],
             ]);
         }
 
-        $token = $user->createToken('auth_token', ['*'], now()->addHours(5))->plainTextToken;
+        $user = auth()->user();
 
-        return [
-            'user' => $user,
-            'token' => $token,
-        ];
+        return ['user' => $user];
     }
+
 
     public function sendOtp(array $data, string $type): void
     {
