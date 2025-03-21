@@ -7,8 +7,10 @@ use App\Mail\SendOtpCode;
 use App\Models\OtpCode;
 use App\Models\User;
 use Exception;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
 class AuthService
@@ -24,6 +26,10 @@ class AuthService
         ]);
 
         auth()->login($user);
+
+        $token = Str::random(40);
+
+        Cookie::queue('auth_token', $token, 60 * 24 * 7); // 7 дней
 
         return [
             'user' => $user,
@@ -42,6 +48,9 @@ class AuthService
         }
 
         $user = auth()->user();
+
+        $token = Str::random(40);
+        Cookie::queue('auth_token', $token, 60 * 24 * 7); // 7 дней
 
         return ['user' => $user];
     }
@@ -89,11 +98,6 @@ class AuthService
         $otp->delete();
 
         return $user;
-    }
-
-    public function destroyTokens(): void
-    {
-        auth()->user()->tokens()->delete();
     }
 
     /**
