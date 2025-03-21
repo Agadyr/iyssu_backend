@@ -24,6 +24,7 @@ class CartItemRequest extends UserProductRequest
     {
         return array_merge(parent::rules(), [
             'quantity' => 'required|integer|min:1',
+            'volume_option' => 'required|integer|min:1',
         ]);
     }
 
@@ -33,6 +34,10 @@ class CartItemRequest extends UserProductRequest
             'quantity.required' => 'Количество товара обязательно.',
             'quantity.integer' => 'Количество должно быть числом.',
             'quantity.min' => 'Количество товара должно быть не меньше 1.',
+
+            'volume_option.required' => 'Обьем товара обязательно.',
+            'volume_option.integer' => 'Обьем должно быть числом.',
+            'volume_option.min' => 'Обьем товара должно быть не меньше 1.',
         ]);
     }
 }

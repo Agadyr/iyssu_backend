@@ -14,6 +14,7 @@ return new class extends UserProductMigration
         parent::up();
         Schema::table($this->tableName, static function (Blueprint $table) {
             $table->unsignedInteger('quantity')->default(1);
+            $table->unsignedInteger('volume_option')->default(3);
         });
     }
 };

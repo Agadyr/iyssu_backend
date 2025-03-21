@@ -3,11 +3,12 @@
 namespace App\Service\Product;
 
 use App\Exceptions\ApiException;
-use App\Models\Favorite;
 use App\Models\Product;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Mockery\Exception;
 
 class ProductService
 {
@@ -20,7 +21,7 @@ class ProductService
     {
         $cacheKey = "products";
 
-        return cache()->remember($cacheKey, now()->addMinutes(10), function() {
+        return cache()->remember($cacheKey, now()->addMinutes(10), function () {
             return Product::with(['category'])->get();
         });
     }
@@ -35,6 +36,16 @@ class ProductService
     public function createProduct(array $data): Product
     {
         try {
+            if (!empty($data['images'])) {
+                $imageUrls = [];
+
+                foreach ($data['images'] as $image) {
+                    $path = $image->store('products', 'public');
+                    $imageUrls[] = Storage::url($path);
+                }
+                $data['image_url'] = $imageUrls;
+            }
+
             return Product::create($data);
         } catch (QueryException) {
             throw new ApiException('Ошибка при создании продукта', 400);
@@ -93,6 +104,36 @@ class ProductService
                     ->with(['user:id,name']);
             }
         ])->findOrFail($id);
-
     }
+
+    /**
+     * @throws ApiException
+     */
+    public function storeProductImages(Product $product, array $data): void
+    {
+        try {
+            $existingImages = $product->image_url ?? [];
+
+            foreach ($data['images'] as $image) {
+                $fileHash = md5_file($image->getPathname());
+                $fileName = $image->getClientOriginalName();
+                $storagePath = "products/$fileHash-$fileName";
+
+                if (!in_array(Storage::url($storagePath), $existingImages, true)) {
+                    $path = $image->storeAs('products', "$fileHash-$fileName", 'public');
+                    $imageUrls[] = Storage::url($path);
+                }
+            }
+
+            if (!empty($imageUrls)) {
+                $product->update([
+                    'image_url' => array_merge($existingImages, $imageUrls)
+                ]);
+            }
+
+        } catch (\Exception) {
+            throw new ApiException('Загрузка изображений не удалась');
+        }
+    }
+
 }

@@ -9,8 +9,8 @@ use App\Http\Requests\Product\UpdateProductRequest;
 use App\Models\Product;
 use App\Service\Product\ProductService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-
 class ProductController extends Controller
 {
     private ProductService $productService;
@@ -72,4 +72,25 @@ class ProductController extends Controller
         $this->productService->deleteProduct($product);
         return response()->json(['message' => 'Product deleted']);
     }
+
+    /**
+     *
+     * @param Request $request
+     * @param Product $product
+     * @return JsonResponse
+     * @throws ApiException
+     */
+
+    public function uploadImages(Request $request, Product $product): JsonResponse
+    {
+        $data = $request->validate([
+            'images'   => 'required|array',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
+        ]);
+
+        $this->productService->storeProductImages($product, ['images' => $request->file('images')]);
+        return response()->json(['message' => 'Images uploaded to product']);
+    }
+
+
 }

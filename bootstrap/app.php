@@ -1,4 +1,4 @@
-<?php
+    <?php
 
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\ModeratorMiddleware;
@@ -15,10 +15,12 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->statefulApi();
 
+        $middleware->append(\Illuminate\Http\Middleware\HandleCors::class);
         $middleware->alias([
             'admin' => AdminMiddleware::class,
             'moderator' => ModeratorMiddleware::class,
         ]);
+
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->renderable(function (\App\Exceptions\ApiException $e) {
