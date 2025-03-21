@@ -29,7 +29,7 @@ class AuthService
 
         $token = Str::random(40);
 
-        Cookie::queue('auth_token', $token, 60 * 24 * 7); // 7 дней
+        Cookie::queue(Cookie::make('auth_token', $token, 60 * 24 * 7, sameSite: 'none'));
 
         return [
             'user' => $user,
