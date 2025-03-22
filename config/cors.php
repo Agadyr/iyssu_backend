@@ -1,48 +1,34 @@
 <?php
 
 return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | Cross-Origin Resource Sharing (CORS) Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Here you may configure your settings for cross-origin resource sharing
+    | or "CORS". This determines what cross-origin operations may execute
+    | in web browsers. You are free to adjust these settings as needed.
+    |
+    | To learn more: https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
+    |
+    */
+
     'paths' => ['api/*', 'sanctum/csrf-cookie'],
 
-    'allowed_methods' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    'allowed_methods' => ['*'],
 
-    'allowed_origins' => [
-        'http://localhost:3000',
-        'https://localhost:3000',
-        'http://127.0.0.1:3000',
-        'https://127.0.0.1:3000',
-        'https://iyssu-backend-main-iigq56.laravel.cloud'
-    ],
+    'allowed_origins' => ['http://localhost:3000', 'http://127.0.0.1:3000'],
 
-    'allowed_headers' => [
-        'Accept',
-        'Authorization',
-        'Content-Type',
-        'X-Requested-With',
-        'X-XSRF-TOKEN',
-        'X-CSRF-TOKEN',
-        'Origin',
-        'Cookie',
-        'Set-Cookie',
-        'Referer',  // Добавляем для некоторых браузеров
-        'User-Agent',
-        'Access-Control-Allow-Origin',
-        'Access-Control-Allow-Headers',
-        'Access-Control-Allow-Methods',
-        'Access-Control-Allow-Credentials',
-        'iyssu_backend_session'
-    ],
+    'allowed_origins_patterns' => [],
 
-    'exposed_headers' => [
-        'Set-Cookie',
-        'X-XSRF-TOKEN',  // Важно для CSRF токена
-        'iyssu_backend_session',
-        'Cookie'
-    ],
+    'allowed_headers' => ['*'],
 
-    'max_age' => 7200,
+    'exposed_headers' => [],
+
+    'max_age' => 0,
 
     'supports_credentials' => true,
 
-    // access_control_allow_credentials не нужен, так как supports_credentials уже есть
-    // 'access_control_allow_credentials' => true,
 ];
