@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'paths' => ['*'], // Разрешаем все пути временно для тестирования
+    'paths' => ['*'],
 
     'allowed_methods' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
 
@@ -22,14 +22,27 @@ return [
         'X-CSRF-TOKEN',
         'Origin',
         'Cookie',
-        'Set-Cookie'
+        'Set-Cookie',
+        'Referer',  // Добавляем для некоторых браузеров
+        'User-Agent',
+        'Access-Control-Allow-Origin',
+        'Access-Control-Allow-Headers',
+        'Access-Control-Allow-Methods',
+        'Access-Control-Allow-Credentials',
+        'iyssu_backend_session'
     ],
 
-    'exposed_headers' => ['Set-Cookie'],
+    'exposed_headers' => [
+        'Set-Cookie',
+        'X-XSRF-TOKEN',  // Важно для CSRF токена
+        'iyssu_backend_session',
+        'Cookie'
+    ],
 
     'max_age' => 7200,
 
     'supports_credentials' => true,
 
-    'access_control_allow_credentials' => true,
+    // access_control_allow_credentials не нужен, так как supports_credentials уже есть
+    // 'access_control_allow_credentials' => true,
 ];
