@@ -14,13 +14,7 @@ return [
     | and production domains which access your API via a frontend SPA.
     |
     */
-
-    'stateful' => explode(',', env('SANCTUM_STATEFUL_DOMAINS', sprintf(
-        '%s%s%s',
-        'localhost:3000,127.0.0.1:3000,', // Добавляем наши фронтенд домены
-        'iyssu-backend-main-iigq56.laravel.cloud,', // Добавляем домен бэкенда
-        Sanctum::currentApplicationUrlWithPort()
-    ))),
+    'stateful' => explode(',', env('SANCTUM_STATEFUL_DOMAINS', Sanctum::currentApplicationUrlWithPort())),
 
     /*
     |--------------------------------------------------------------------------
