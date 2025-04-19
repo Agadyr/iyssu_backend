@@ -12,7 +12,6 @@ use App\Service\Auth\PasswordService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Session;
 
 class AuthController extends Controller
@@ -42,8 +41,6 @@ class AuthController extends Controller
 
         Session::invalidate();
         Session::regenerateToken();
-
-        Cookie::queue(Cookie::forget('auth_token'));
 
         return response()->json(['message' => 'Logged out'])
             ->header('Clear-Site-Data', '"cookies"');

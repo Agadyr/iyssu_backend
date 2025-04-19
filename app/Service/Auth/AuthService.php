@@ -29,7 +29,17 @@ class AuthService
 
         $token = Str::random(40);
 
-        Cookie::queue(Cookie::make('auth_token', $token, 60 * 24 * 7, sameSite: 'none'));
+        Cookie::queue(Cookie::make(
+            'auth_token',
+            $token,
+            60 * 24 * 7, // 7 дней
+            '/',
+            '.localhost',  // Secure (требуется для HTTPS)
+            true, // HttpOnly (false, чтобы фронт мог её читать)
+            false,
+            sameSite: 'none'
+        ));
+
 
         return [
             'user' => $user,
@@ -50,7 +60,16 @@ class AuthService
         $user = auth()->user();
 
         $token = Str::random(40);
-        Cookie::queue('auth_token', $token, 60 * 24 * 7); // 7 дней
+        Cookie::queue(Cookie::make(
+            'auth_token',
+            $token,
+            60 * 24 * 7, // 7 дней
+            '/',
+            '.localhost',  // Secure (требуется для HTTPS)
+            true, // HttpOnly (false, чтобы фронт мог её читать)
+            false,
+            sameSite: 'none'
+        ));
 
         return ['user' => $user];
     }

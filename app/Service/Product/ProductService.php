@@ -27,6 +27,24 @@ class ProductService
     }
 
     /**
+     * Получить популярные продукты.
+     *
+     * @return Collection
+     */
+
+    public function getPopulars(): Collection
+    {
+        $cacheKey = "popular_products";
+
+        return cache()->remember($cacheKey, now()->addMinutes(10), function () {
+            return Product::with(['category'])
+                ->withCount('reviews')
+                ->orderByDesc('reviews_count')
+                ->get();
+        });
+    }
+
+    /**
      * Создать новый продукт.
      *
      * @param array $data
