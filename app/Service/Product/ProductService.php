@@ -44,6 +44,18 @@ class ProductService
         });
     }
 
+    public function getToday(): Collection
+    {
+        $cacheKey = "today_products";
+
+        return cache()->remember($cacheKey, now()->addHours(12), function () {
+            return Product::with(['category'])
+                ->withCount('reviews')
+                ->orderByDesc('discount')
+                ->take(6)
+                ->get();
+        });
+    }
     /**
      * Создать новый продукт.
      *

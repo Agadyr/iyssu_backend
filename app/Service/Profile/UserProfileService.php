@@ -10,19 +10,25 @@ class UserProfileService
 {
     public function getUserData(User $user): array
     {
-        $user->load(['bonusPoints', 'bonusHistories']);
-        return [
-            'id' => $user->id,
-            'name' => $user->name,
-            'email' => $user->email,
-            'email_verified_at' => $user->email_verified_at?->toDateTimeString(),
-            'phone' => $user->phone,
-            'city' => $user->city,
-            'bonus_points' => $user->bonusPoints?->amount ?? 0,
-            'bonus_histories' => $user->bonusHistories,
-            'created_at' => $user->created_at->toDateTimeString(),
-        ];
+        $cacheKey = "user_data_{$user->id}";
+
+        return cache()->remember($cacheKey, now()->addMinutes(30), function () use ($user) {
+            $user->load(['bonusPoints', 'bonusHistories']);
+
+            return [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'email_verified_at' => $user->email_verified_at?->toDateTimeString(),
+                'phone' => $user->phone,
+                'city' => $user->city,
+                'bonus_points' => $user->bonusPoints?->amount ?? 0,
+                'bonus_histories' => $user->bonusHistories,
+                'created_at' => $user->created_at->toDateTimeString(),
+            ];
+        });
     }
+
 
     /**
      * @throws Exception

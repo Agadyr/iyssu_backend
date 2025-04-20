@@ -46,7 +46,7 @@ class FavoriteService
         $cacheKey = "user_favorites_{$this->userId}";
 
         return cache()->remember($cacheKey, now()->addMinutes(1), function() {
-            return Favorite::with(['product:id,name'])
+            return Favorite::with('product')
             ->where('user_id', $this->userId)->get();
         });
     }

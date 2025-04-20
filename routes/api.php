@@ -76,6 +76,7 @@ Route::prefix('/category')->group(function () {
 Route::prefix('products')->group(function () {
     Route::get('/', [ProductController::class, 'index']);
     Route::get('/popular', [ProductController::class, 'popular']);
+    Route::get('/today', [ProductController::class, 'today']);
     Route::post('/', [ProductController::class, 'store']);
     Route::get('/search', [ProductSearchController::class, 'search']);
 
