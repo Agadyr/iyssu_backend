@@ -25,14 +25,11 @@ class AuthService
             'email_verified_at' => null,
         ]);
 
-        auth()->login($user);
-
-        $token = Str::random(40);
-
-        Cookie::queue(Cookie::make('auth_token', $token, 60 * 24 * 7, sameSite: 'none'));
+        $token = $user->createToken('default')->plainTextToken;
 
         return [
             'user' => $user,
+            'token' => $token,
         ];
     }
 
@@ -49,10 +46,12 @@ class AuthService
 
         $user = auth()->user();
 
-        $token = Str::random(40);
-        Cookie::queue('auth_token', $token, 60 * 24 * 7); // 7 дней
+        if ($user) $token = $user->createToken('default')->plainTextToken;
 
-        return ['user' => $user];
+        return [
+            'user' => $user,
+            'token' => $token,
+        ];
     }
 
 

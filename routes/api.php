@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\V1\Favorite\FavoriteController;
 use App\Http\Controllers\Api\V1\CartItem\CartItemController;
 
 
+
 Route::prefix('promo')->group(function () {
     Route::get('/check', [PromocodeController::class, 'index']);
     Route::get('/checkOtherPromos', [PromocodeController::class, 'checkServerPromos']);
@@ -74,6 +75,8 @@ Route::prefix('/category')->group(function () {
 
 Route::prefix('products')->group(function () {
     Route::get('/', [ProductController::class, 'index']);
+    Route::get('/popular', [ProductController::class, 'popular']);
+    Route::get('/today', [ProductController::class, 'today']);
     Route::post('/', [ProductController::class, 'store']);
     Route::get('/search', [ProductSearchController::class, 'search']);
 

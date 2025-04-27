@@ -8,13 +8,14 @@ class Product extends Model
 {
     protected $fillable = [
         'name', 'description', 'price', 'brand', 'quantity', 'unit', 'is_new', 'category_id',
-        'volume_options', 'scent', 'image_url', 'rating', 'discount'
+        'volume_options', 'scent', 'image_url', 'rating', 'discount', 'brand_url'
     ];
 
     protected $casts = [
         'volume_options' => 'array',
         'scent' => 'array',
         'image_url' => 'array',
+        'brand_url' => 'array',
         'is_new' => 'boolean',
     ];
 
@@ -31,4 +32,5 @@ class Product extends Model
     {
         return $this->hasMany(Review::class);
     }
+
 }

@@ -12,7 +12,6 @@ use App\Service\Auth\PasswordService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Session;
 
 class AuthController extends Controller
@@ -36,15 +35,7 @@ class AuthController extends Controller
 
     public function logout(Request $request): JsonResponse
     {
-        $request->user()->tokens()->delete();
-
-        Auth::guard('web')->logout();
-
-        Session::invalidate();
-        Session::regenerateToken();
-
-        Cookie::queue(Cookie::forget('auth_token'));
-
+        $request->user()->currentAccessToken()->delete();
         return response()->json(['message' => 'Logged out'])
             ->header('Clear-Site-Data', '"cookies"');
     }

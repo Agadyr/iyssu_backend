@@ -29,6 +29,24 @@ class ProductController extends Controller
     }
 
     /**
+     * @return JsonResponse
+     */
+
+    public function popular(): JsonResponse
+    {
+        return response()->json($this->productService->getPopulars());
+    }
+
+    /**
+     * @return JsonResponse
+     */
+
+    public function today(): JsonResponse
+    {
+        return response()->json($this->productService->getToday());
+    }
+
+    /**
      *
      * @param StoreProductRequest $request
      * @return JsonResponse
