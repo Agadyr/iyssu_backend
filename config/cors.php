@@ -8,7 +8,8 @@ return [
     'allowed_origins' => [
         'http://localhost:3000',
         'http://127.0.0.1:8000',
-        'https://bright-presently-hornet.ngrok-free.app'
+        'https://bright-presently-hornet.ngrok-free.app',
+        'https://iyssu-front.vercel.app'
     ],
 
     'allowed_headers' => ['*'],
