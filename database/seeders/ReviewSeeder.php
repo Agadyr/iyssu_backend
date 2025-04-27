@@ -6,9 +6,7 @@ use App\Models\Product;
 use App\Models\Review;
 use App\Models\User;
 use Faker\Factory;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Nette\Utils\Random;
 
 class ReviewSeeder extends Seeder
 {
