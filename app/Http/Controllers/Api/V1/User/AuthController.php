@@ -35,13 +35,7 @@ class AuthController extends Controller
 
     public function logout(Request $request): JsonResponse
     {
-        $request->user()->tokens()->delete();
-
-        Auth::guard('web')->logout();
-
-        Session::invalidate();
-        Session::regenerateToken();
-
+        $request->user()->currentAccessToken()->delete();
         return response()->json(['message' => 'Logged out'])
             ->header('Clear-Site-Data', '"cookies"');
     }

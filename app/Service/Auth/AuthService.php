@@ -25,11 +25,12 @@ class AuthService
             'email_verified_at' => null,
         ]);
 
-        auth()->login($user);
+        $token = $user->createToken('default')->plainTextToken;
 
-        $token = Str::random(40);
-
-        return ['user' => $user, 'token' => $token];
+        return [
+            'user' => $user,
+            'token' => $token,
+        ];
     }
 
     /**
@@ -45,9 +46,12 @@ class AuthService
 
         $user = auth()->user();
 
-        $token = Str::random(40);
+        if ($user) $token = $user->createToken('default')->plainTextToken;
 
-        return ['user' => $user, 'token' => $token];
+        return [
+            'user' => $user,
+            'token' => $token,
+        ];
     }
 
 
