@@ -15,7 +15,6 @@ class Product extends Model
         'volume_options' => 'array',
         'scent' => 'array',
         'image_url' => 'array',
-        'brand_url' => 'array',
         'is_new' => 'boolean',
     ];
 

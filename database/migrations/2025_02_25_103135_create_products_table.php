@@ -25,7 +25,7 @@ return new class extends Migration {
             $table->jsonb('volume_options')->nullable();
             $table->jsonb('scent')->nullable();
             $table->jsonb('image_url')->nullable();
-            $table->jsonb('brand_url')->nullable();
+            $table->string('brand_url')->nullable();
 
             $table->decimal('rating', 5, 2)->default(0)->index();
             $table->unsignedInteger('discount')->default(0)->index();

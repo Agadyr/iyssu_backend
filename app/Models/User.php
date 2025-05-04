@@ -82,5 +82,9 @@ use Illuminate\Notifications\Notifiable;
     {
         return $this->hasMany(Review::class);
     }
+    public function favorites(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Favorite::class);
+    }
 
     }

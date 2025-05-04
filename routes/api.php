@@ -79,7 +79,7 @@ Route::prefix('products')->group(function () {
     Route::get('/today', [ProductController::class, 'today']);
     Route::post('/', [ProductController::class, 'store']);
     Route::get('/search', [ProductSearchController::class, 'search']);
-
+    Route::get('/brands', [ProductController::class, 'brands']);
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('/{product}', [ProductController::class, 'show']);
         Route::put('/{product}', [ProductController::class, 'update']);
@@ -108,4 +108,14 @@ Route::prefix('cart')->middleware('auth:sanctum')->group(function () {
     Route::post('/add', [CartItemController::class, 'addProduct']);
     Route::delete('/remove/{productId}', [CartItemController::class, 'removeProduct']);
     Route::delete('/clear', [CartItemController::class, 'clear']);
+});
+
+
+Route::post('/testbtn', function (\Illuminate\Http\Request $request) {
+    $data = $request->all();
+    $res = [
+        'btn_text' => '#6c63ff',
+        'btn_bg_color' => '#6c63ff'
+    ];
+    return response()->json(['data' => $res]);
 });

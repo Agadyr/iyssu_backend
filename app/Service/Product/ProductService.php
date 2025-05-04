@@ -3,9 +3,12 @@
 namespace App\Service\Product;
 
 use App\Exceptions\ApiException;
+use App\Models\Favorite;
 use App\Models\Product;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Mockery\Exception;
@@ -126,14 +129,34 @@ class ProductService
      * @param int $id
      * @return Product
      */
+
     public function getProductById(int $id): Product
     {
-        return Product::with([
-            'reviews' => function ($query) {
-                $query->select('id', 'user_id', 'product_id', 'comment', 'rating', 'created_at')
-                    ->with(['user:id,name']);
+        // Получаем ключ кэша, уникальный для этого продукта и пользователя
+        $user = Auth::user();
+        $userId = $user ? $user->id : 'guest';
+        $cacheKey = "product_{$id}_user_{$userId}";
+
+        // Попытка получить данные из кэша
+        return Cache::remember($cacheKey, now()->addHours(24), static function () use ($id, $user) {
+            $product = Product::with([
+                'reviews' => function ($query) {
+                    $query->select('id', 'user_id', 'product_id', 'comment', 'rating', 'created_at')
+                        ->with(['user:id,name']);
+                }
+            ])->findOrFail($id);
+
+            if ($user) {
+                $product->is_favorite = Favorite::where([
+                    'user_id' => $user->id,
+                    'product_id' => $product->id
+                ])->exists();
+            } else {
+                $product->is_favorite = false;
             }
-        ])->findOrFail($id);
+
+            return $product;
+        });
     }
 
     /**
